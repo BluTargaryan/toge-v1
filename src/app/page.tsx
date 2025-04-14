@@ -1,9 +1,9 @@
-import Image from "next/image";
+import IntroVideo from "./components/sections/IntroVideo";
 
 export default function Home() {
   return (
- <div>
-  
- </div>
+ <>
+  <IntroVideo />
+ </>
   );
 }

@@ -1,13 +1,7 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+@theme {
   --color-primary: #0F5C21;
   --color-secondary: #A6D2C8;
   --color-background: #FBFDFB;
@@ -17,19 +11,21 @@
   --font-inter: var(--font-inter);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--color-background);
+  color: var(--color-text);
   font-family: var(--font-inter);
 }
 
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-manrope);
+}
+
+ul {
+  list-style: none;
+}
+
+.footer-list{
+  @apply flex flex-col gap-6
 }
