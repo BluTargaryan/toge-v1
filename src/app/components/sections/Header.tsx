@@ -17,7 +17,7 @@ const Header = () => {
   }, []);
 
   return (
-    <header className={`fixed top-0 left-0 right-0 z-50 bg-background flex ${scrollY > 0 ? 'flex-row justify-between' : 'flex-col'} gap-4 items-center py-4 px-5
+    <header className={`fixed top-0 left-0 right-0 z-50 bg-background flex ${scrollY > 0 ? 'flex-row justify-between' : 'flex-col'} gap-4 items-center py-4 edge-padding
     transition-all duration-300
     `}>
 

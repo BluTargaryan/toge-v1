@@ -1,9 +1,18 @@
 import React from 'react'
-import { introVideoURL } from '@/app/utils/utils'
+import IntroVideoOverlay from '../atoms/IntroVideoOverlay'
 const IntroVideo = () => {
   return (
     <section className='w-full h-[calc(100vh-100px)] flex items-center justify-center'>
-       <video src={introVideoURL} className='w-4/5 h-4/5' autoPlay muted loop />
+       <div className='relative w-full h-4/5 overflow-hidden rounded-lg'>
+         <video 
+           src={'/TogeStockVideo.mp4'} 
+           className='w-full h-full object-cover object-center' 
+           autoPlay 
+           muted 
+           loop 
+         />
+         <IntroVideoOverlay />
+       </div>
     </section>
   )
 }
