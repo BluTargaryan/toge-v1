@@ -25,7 +25,9 @@ const Header = () => {
 
       <nav className='flex gap-8 items-center'>
         {pages.map((page) => (
-          <Link key={page.href} href={page.href} className='text-xs hover:text-accent transition-colors duration-300 font-medium'>
+          <Link key={page.href} href={page.href} className='text-xs hover:text-accent transition-colors duration-300 font-medium
+          md:text-sm
+          '>
             {page.name}
           </Link>
         ))}
