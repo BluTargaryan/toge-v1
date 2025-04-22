@@ -10,6 +10,7 @@ const FeedItem = () => {
     />
     <div className='p-4 flex justify-between items-center
     md:flex-col md:gap-5 md:items-start
+    xl:flex-row xl:items-center
     '>
 
         <div className='flex flex-col gap-1 text-background w-1/2
@@ -20,9 +21,9 @@ const FeedItem = () => {
         </div>
 
 
-        <button className='bg-accent text-text p-2.5 rounded-lg flex items-center gap-6 hover:gap-8 transition-all duration-300'>
+        <button className='bg-accent text-text p-2.5 rounded-lg flex items-center gap-6 group cursor-pointer xl:shrink-0'>
             <span className='text-xs '>Learn more</span>
-            <FaLongArrowAltRight />
+            <FaLongArrowAltRight className='group-hover:translate-x-1 transition-all duration-300'/>
         </button>
 
     </div>

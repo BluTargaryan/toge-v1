@@ -8,16 +8,17 @@ const Hero = () => {
 <div className='flex flex-col gap-2 items-center text-center
 md:w-full
 '>
-<h1 className='text-3xl font-bold font-manrope text-primary'>
+<h1 className='text-3xl font-bold font-manrope text-primary xl:text-4xl'>
     Toge
 </h1>
-<p className='w-full md:w-1/2'>
+<p className='w-full md:w-1/2 xl:w-1/4'>
 The one stop search portal for all those hard-to-find African ingredients in the UK
 </p>
 </div>
 
 <div className='flex flex-col gap-4
 md:w-4/5
+xl:w-1/3
 '>
 <input type="text" placeholder='Search for ingredients' className='w-full h-12 rounded-sm bg-secondary p-4' />
 <LocationInput />
@@ -25,6 +26,7 @@ md:w-4/5
 
 <button className='w-full h-12 rounded-sm bg-primary text-background hover:bg-accent transition-all duration-300 cursor-pointer
 md:w-1/2
+xl:w-1/4
 '>
     Search
 </button>
