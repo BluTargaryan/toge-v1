@@ -18,8 +18,11 @@ const ShopPage = () => {
 
       <ShopHero />
       <Location />
+      <section className='flex flex-col gap-16 md:flex-row'>
+       
       <OCTimes />
       <Contacts />
+      </section>
     </main>
   );
 }

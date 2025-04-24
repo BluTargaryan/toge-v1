@@ -18,7 +18,10 @@ const ShopHero = () => {
 
         <Image src={'https://images.unsplash.com/photo-1693013751189-8ae51b21351e?q=80&w=2075&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'} 
     alt='feed item' width={500} height={500} 
-    className='w-full h-52 object-cover object-center'
+    className='w-full h-52 object-cover object-center rounded-lg
+    md:h-72
+    xl:h-[624px]
+    '
     />
     <p>
     Gorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam eu turpis molestie, dictum est a, mattis tellus. Sed dignissim, metus nec fringilla accumsan, risus sem sollicitudin lacus, ut interdum tellus elit sed risus. Maecenas eget condimentum velit, sit amet feugiat lectus.

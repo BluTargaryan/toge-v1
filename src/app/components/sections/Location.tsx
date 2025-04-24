@@ -3,7 +3,7 @@ import LocationMap from '../atoms/LocationMap'
 const Location = () => {
   return (
     <section className='w-full flex flex-col gap-4'>
-        <h2 className='text-xl font-semibold text-primary uppercase'>
+        <h2 className='text-xl !font-inter font-semibold text-primary uppercase'>
             Location
         </h2>
         <span>
