@@ -3,6 +3,7 @@ import { Manrope,Inter} from "next/font/google";
 import "./globals.css";
 import Header from "./components/sections/Header";
 import Footer from "./components/sections/Footer";
+import Providers from "./components/sections/Providers";
 const manrope = Manrope({
   variable: "--font-manrope",
   weight: ["400", "500", "600", "700"],
