@@ -1,6 +1,8 @@
 import React from 'react'
 import FeedItem from '../atoms/FeedItem'
-const Feed = () => {
+import { Shop } from '@/app/utils/utils'
+
+const Feed = ({feedData, location, ingredient}: {feedData: Shop[], location: string, ingredient: string}) => {
   return (
     <section className='w-full flex flex-col gap-14'>
         <div className='flex gap-5 items-end'>
@@ -8,10 +10,10 @@ const Feed = () => {
             md:text-5xl
             xl:text-6xl
             '>
-                POomo
+                {ingredient}
             </span>
             <span className='font-semibold text-primary uppercase w-2/5 xl:text-xl'>
-            LOCATION: ALL
+            location: {location}
             </span>
         </div>
 
@@ -19,12 +21,9 @@ const Feed = () => {
         md:grid-cols-3 md:gap-5
         xl:gap-y-12
         '>
-          <FeedItem />
-         <FeedItem />
-         <FeedItem />
-         <FeedItem />
-         <FeedItem />
-         <FeedItem />
+          {feedData.map((shop) => (
+            <FeedItem key={shop.id} shopTitle={shop.title} shopLocation={shop.locationTitle} shopImage={shop.url} />
+          ))}
         </div>
 
     </section>

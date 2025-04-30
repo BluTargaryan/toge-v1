@@ -30,7 +30,9 @@ export default function RootLayout({
     <html lang="en" className={`${manrope.variable} ${inter.variable} antialiased bg-background box-border`}>
       <body className="overflow-x-hidden">
         <Header />
+        <Providers>
           {children}
+        </Providers>
         <Footer />
       </body>
     </html>

@@ -45,3 +45,21 @@ export const contactLinks: Array<{name: string, href: string}> = [
 
 export const introVideoURL: string = 'https://www.youtube.com/embed/dQw4w9WgXcQ'
 
+export interface Shop {
+  id: string;
+  title: string;
+  url: string;
+  description: string;
+  locationLong: number;
+  locationLat: number;
+  locationTitle: string;
+  contacts: any[];
+  ocTimes: any[];
+}
+
+export interface Ingredient {
+  id: string;
+  title: string;
+  shops: string[];
+}
+
