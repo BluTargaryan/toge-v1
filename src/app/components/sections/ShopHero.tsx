@@ -1,6 +1,7 @@
 import React from 'react'
 import Image from 'next/image'
-const ShopHero = () => {
+import { Shop } from '@/app/utils/utils'
+const ShopHero = ({shop}: {shop: Shop}) => {
   return (
     <section className='w-full flex flex-col gap-9'>
 
@@ -9,14 +10,14 @@ const ShopHero = () => {
             md:text-5xl
             xl:text-6xl
             '>
-                POomo
+                {shop.title}  
             </h1>
             <span className='font-semibold text-primary uppercase w-2/5 xl:text-xl'>
-            LOCATION: ALL
+            LOCATION: {shop.locationTitle}
             </span>
         </div>
 
-        <Image src={'https://images.unsplash.com/photo-1693013751189-8ae51b21351e?q=80&w=2075&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'} 
+        <Image src={shop.url} 
     alt='feed item' width={500} height={500} 
     className='w-full h-52 object-cover object-center rounded-lg
     md:h-72
@@ -24,7 +25,7 @@ const ShopHero = () => {
     '
     />
     <p>
-    Gorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam eu turpis molestie, dictum est a, mattis tellus. Sed dignissim, metus nec fringilla accumsan, risus sem sollicitudin lacus, ut interdum tellus elit sed risus. Maecenas eget condimentum velit, sit amet feugiat lectus.
+    {shop.description}
     </p>
     </section>
   )

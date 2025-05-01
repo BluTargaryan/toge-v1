@@ -1,9 +1,9 @@
 'use client'
 
-const LocationMap = () => {
+const LocationMap = ({locationLong, locationLat}: {locationLong: number, locationLat: number}) => {
   return (
     <iframe
-      src={`https://www.google.com/maps/embed/v1/place?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&q=52.4068,-1.5197`}
+      src={`https://www.google.com/maps/embed/v1/place?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&q=${locationLat},${locationLong}`}
       width="100%"
       height="100%"
       style={{ border: 0 }}

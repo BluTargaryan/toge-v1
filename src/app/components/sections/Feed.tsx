@@ -22,7 +22,7 @@ const Feed = ({feedData, location, ingredient}: {feedData: Shop[], location: str
         xl:gap-y-12
         '>
           {feedData.map((shop) => (
-            <FeedItem key={shop.id} shopTitle={shop.title} shopLocation={shop.locationTitle} shopImage={shop.url} />
+            <FeedItem key={shop.id} shopId={shop.id} shopTitle={shop.title} shopLocation={shop.locationTitle} shopImage={shop.url} />
           ))}
         </div>
 

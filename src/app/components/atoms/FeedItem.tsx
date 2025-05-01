@@ -1,8 +1,16 @@
 import React from 'react'
 import Image from 'next/image'
 import { FaLongArrowAltRight } from 'react-icons/fa'
+import { useRouter } from 'next/navigation';
 
-const FeedItem = ({shopTitle, shopLocation, shopImage}: {shopTitle: string, shopLocation: string, shopImage: string}) => {
+const FeedItem = ({shopId, shopTitle, shopLocation, shopImage}: {shopId: string, shopTitle: string, shopLocation: string, shopImage: string}) => {
+
+  const router = useRouter();
+
+  const handleClick = () => {
+    router.push(`/shop/${shopId}`);
+  }
+
   return (
     <div className='w-full flex flex-col bg-primary rounded-lg overflow-hidden'>
       <div className='relative w-full h-40'>
@@ -24,7 +32,9 @@ const FeedItem = ({shopTitle, shopLocation, shopImage}: {shopTitle: string, shop
           <span className='text-xs'>{shopLocation}</span>
         </div>
 
-        <button className='bg-accent text-text p-2.5 rounded-lg flex items-center gap-6 group cursor-pointer xl:shrink-0'>
+        <button className='bg-accent text-text p-2.5 rounded-lg flex items-center gap-6 group cursor-pointer xl:shrink-0'
+        onClick={() => handleClick()}
+        >
           <span className='text-xs'>Learn more</span>
           <FaLongArrowAltRight className='group-hover:translate-x-1 transition-all duration-300'/>
         </button>

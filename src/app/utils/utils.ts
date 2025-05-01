@@ -7,6 +7,10 @@ export const pages: Array<{name: string, href: string}> = [
     name: 'About',
     href: '/about',
   },
+  {
+    name: 'Chatbot',
+    href: '/chatbot',
+  },
 ]
 
 export const socialLinks: Array<{name: string, href: string}> = [

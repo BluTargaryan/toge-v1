@@ -12,7 +12,7 @@ md:w-full
     Toge
 </h1>
 <p className='w-full md:w-1/2 xl:w-1/4'>
-The one stop search portal for all those hard-to-find African ingredients in the UK
+The one stop search portal for all those hard-to-find African ingredients in Coventry
 </p>
 </div>
 

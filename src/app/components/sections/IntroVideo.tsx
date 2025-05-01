@@ -13,7 +13,7 @@ const IntroVideo = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
   return (
-    <section className={`w-full  flex items-center justify-center ${scrollY > 0 ? 'h-0' : 'h-[calc(100vh-100px)]'}`}>
+    <section className={`w-full  flex items-center justify-center ${scrollY > 0 ? 'h-0' : 'h-[calc(100vh-100px)]'} transition-all duration-300`}>
        <div className='relative w-full h-4/5 overflow-hidden rounded-lg'>
          <video 
            src={'/TogeStockVideo.mp4'} 

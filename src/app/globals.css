@@ -31,7 +31,7 @@ ul {
 }
 
 .section-container{
-  @apply py-32 flex flex-col gap-16 xl:gap-16
+  @apply my-32 flex flex-col gap-16 xl:gap-16
 }
 
 .edge-padding{

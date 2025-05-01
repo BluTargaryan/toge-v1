@@ -1,10 +1,10 @@
 import Link from 'next/link'
 import React from 'react'
 
-const Day = () => {
+const Day = ({dayStatement, times}: {dayStatement: string, times: string}) => {
   return (
     <Link href={`/`} className='uppercase'>
-        <b>Mondays</b>: 10:00 - 18:00
+        <b>{dayStatement}</b>: {times}
     </Link>
   )
 }
