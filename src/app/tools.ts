@@ -13,7 +13,7 @@ export const toolsSchema: Tool[] = [
                         description: "ingredient name"
                     }
                    },
-                   required: ["ingredient"],
+                   required: ["ingredientName"],
                 },
             },
         },
