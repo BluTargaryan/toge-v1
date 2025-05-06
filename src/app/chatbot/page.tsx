@@ -7,76 +7,77 @@ import { toolsSchema } from '../tools';
 import { convertFileToUint8Array } from '../utils/utils';
 import { useAppContext } from '../context/AppContext';
 
-const PROMPT = "Hi. In a short paragraph, explain what you can do.";
-const AWS_REGION = process.env.NEXT_PUBLIC_AWS_REGION!;
-const MODEL_ID = process.env.NEXT_PUBLIC_MODEL_ID!;
+import {
+  BedrockAgentRuntimeClient,
+  InvokeAgentCommand,
+  InvokeAgentCommandOutput,
+} from "@aws-sdk/client-bedrock-agent-runtime";
 
-const client = new BedrockRuntimeClient({
+const PROMPT = "Hi. In a short paragraph, explain what you can do.";
+
+
+const AWS_REGION = process.env.NEXT_PUBLIC_AWS_REGION!;
+const MODEL_NAME = process.env.NEXT_PUBLIC_MODEL_NAME!;
+const USER_NAME = process.env.NEXT_PUBLIC_USER_NAME!;
+
+const client = new BedrockAgentRuntimeClient({
   region: AWS_REGION,
   credentials: {
-    accessKeyId: process.env.NEXT_PUBLIC_AWS_ACCESS_KEY!,
-    secretAccessKey: process.env.NEXT_PUBLIC_AWS_SECRET_KEY!,
+      accessKeyId: process.env.NEXT_PUBLIC_AWS_ACCESS_KEY!,
+      secretAccessKey: process.env.NEXT_PUBLIC_AWS_SECRET_KEY!,
   },
 });
 
+interface IMessage {
+  role: ConversationRole;
+  content: { text: string }[];
+}
+
+
 const Chatbot = () => {
-  const [history, setHistory] = useState<Message[]>([]);
   const [value, setValue] = useState<string>(PROMPT);
-  const {shops, ingredients} = useAppContext();
+    const onChange = (e: ChangeEvent<HTMLTextAreaElement>) =>
+        setValue(e.target.value);
 
-  const tools = {
-    findShops: async ({ ingredientName }: { ingredientName: string }) => {
-      const ingredient = ingredients.find((ingredient) => ingredient.title.toLowerCase().includes(ingredientName.toLowerCase()));
-      if (!ingredient) {
-        return JSON.stringify({ status: "error", message: "Ingredient not found" });
-      }
-      const ingredientShops = ingredient.shops;
-      const shopsData = shops.filter((shop) => ingredientShops.includes(shop.id));
-      const finalData = JSON.stringify({
-        status: "success",
-        data: {
-          ingredient: ingredient.title,
-          shops: shopsData.map(shop => ({
-            id: shop.id,
-            title: shop.title,
-            description: shop.description,
-            locationTitle: shop.locationTitle,
-            locationLat: shop.locationLat,
-            locationLong: shop.locationLong,
-            url: shop.url,
-            ocTimes: shop.ocTimes,
-            contacts: shop.contacts
-          }))
-        }
-      });
-      console.log(finalData);
-      return finalData;
-    }
-  };
+    const submit = () => {
+        onSubmit(value);
+        setValue("");
+    };
 
-  const sendResponse = async (messages: Message[]) => {
+  const [history, setHistory] = useState<IMessage[]>([]);
+
+  const [stream, setStream] = useState<string | null>(null);
+
+  const sendResponse = async (prompt: string) => {
+    const content: string = prompt;
     let retries = 3;
     let delay = 1000;
 
     while (retries > 0) {
       try {
         const apiResponse = await client.send(
-          new ConverseCommand({
-            modelId: MODEL_ID,
-            messages: messages,
-            inferenceConfig: {
-              maxTokens: 512,
-              temperature: 0.5,
-              topP: 0.9,
-            },
-            toolConfig: {
-              tools: toolsSchema,
-            },
+          new InvokeAgentCommand({
+            inputText: content,
+            agentId: "5MDMB9N8BH",
+            agentAliasId: "3KENGHADBD",
+            sessionId: "123",
           })
         );
-        return apiResponse;
+        
+        // Try to parse the response immediately
+        try {
+          const result = await parseResponse(apiResponse);
+          return result; // If successful, return the parsed result
+        } catch (streamError: any) {
+          if (streamError.name === 'ThrottlingException' && retries > 0) {
+            // If stream was throttled, throw to trigger retry of entire request
+            throw streamError;
+          }
+          throw streamError; // If it's not throttling, throw the original error
+        }
       } catch (error: any) {
         if (error.name === 'ThrottlingException' && retries > 0) {
+          console.log(`Throttled. Retrying in ${delay}ms. Retries left: ${retries - 1}`);
           retries--;
           await new Promise(resolve => setTimeout(resolve, delay));
           delay *= 2;
@@ -88,96 +89,65 @@ const Chatbot = () => {
     throw new Error('Max retries reached for ThrottlingException');
   };
 
-  const parseResponse = useCallback(async (apiResponse: ConverseCommandOutput) => {
-    const message = apiResponse?.output?.message;
-    const tempHistory = [...history];
+  const parseResponse = async (apiResponse: InvokeAgentCommandOutput) => {
+    if (!apiResponse.completion) return "";
 
-    if (message && apiResponse?.stopReason !== "tool_use") {
-      setHistory((prev) => [...prev, message]);
-    }
+    let completeMessage = "";
 
-    if (message && apiResponse?.stopReason === "tool_use" && apiResponse?.output?.message) {
-      tempHistory.push(apiResponse?.output?.message);
-      const toolUse = apiResponse?.output?.message.content?.
-        find(block => block.toolUse)?.toolUse;
-
-      if (toolUse && typeof toolUse.input === 'object' && toolUse.input && 'ingredientName' in toolUse.input) {
-        const toolResult = await tools[toolUse.name as keyof typeof tools]({
-          ingredientName: toolUse.input.ingredientName as string
-        });
-        console.log({ toolResult });
-        tempHistory.push({
-          role: ConversationRole.USER,
-          content: [{
-            toolResult: {
-              toolUseId: toolUse.toolUseId,
-              content: [
-                {
-                  json: {
-                    results: toolResult
-                  }
-                }
-              ]
-            }
-          }]
-        });
-
-        const response = await sendResponse(tempHistory);
-        await parseResponse(response);
+    try {
+      for await (const item of apiResponse.completion) {
+        if (item.chunk) {
+          const text = item.chunk;
+          const decoded = new TextDecoder("utf-8").decode(text.bytes);
+          setStream(completeMessage + decoded);
+          completeMessage = completeMessage + decoded;
+        }
       }
+      
+      setStream(null);
+      return completeMessage;
+    } catch (error) {
+      setStream(null); // Clean up stream state if there's an error
+      throw error; // Propagate the error to be handled by sendResponse
     }
-  }, [history, tools]);
-
-  const onChange = (e: ChangeEvent<HTMLTextAreaElement>) =>
-    setValue(e.target.value);
-
-  const onSubmit = async (prompt: string, file?: File | null) => {
-    const content: ContentBlock[] = [
-      {
-        text: prompt,
-      },
-    ];
-
-    if (file) {
-      content.push({
-        image: {
-          format: file?.name.split(".").reverse()[0] as ImageFormat,
-          source: {
-            bytes: await convertFileToUint8Array(file),
-          },
-        },
-      });
-    }
-
-    setHistory((prev) => [...prev, { content, role: ConversationRole.USER }]);
   };
 
-  const submit = () => {
-    onSubmit(value);
-    setValue("");
-  };
+const addToHistory = (text: string, role: ConversationRole) => {
+  setHistory((prev) => [...prev, { content: [{ text }], role }]);
+};
 
-  useEffect(() => {
-    const lastMessage = history[history.length - 1];
-    const callModel = async (messages: Message[]) => {
-      const response = await sendResponse(messages);
-      await parseResponse(response);
-    };
-    if (lastMessage?.role === ConversationRole.USER) {
-      callModel(history);
-    }
-  }, [history, parseResponse]);
+const onSubmit = async (prompt: string) => {
+  try {
+    addToHistory(prompt, USER_NAME as ConversationRole);
+    const parsedResponse = await sendResponse(prompt);
+    addToHistory(parsedResponse, MODEL_NAME as ConversationRole);
+  } catch (error) {
+    console.error('Error in chat submission:', error);
+    addToHistory("Sorry, I encountered an error. Please try again.", MODEL_NAME as ConversationRole);
+  }
+};
+
 
   return (
     <main className='section-container edge-padding h-full justify-end'>
       <section className='w-full h-[calc(100vh-200px)] overflow-y-scroll flex flex-col gap-6 items-end'>
-        {history.map(({role, content}) => (
+{history.map(({ role, content }, index) => (
           <QAChatbotUnit 
-            key={content?.[0]?.text || content?.[0]?.toolResult?.toolUseId}
-            author={role || ""}
-            text={content?.[0]?.text || ""}
+            key={content[0].text + role + index}
+            author={role}
+            text={content[0].text}
           />
         ))}
+
+{/* {stream && (
+                    <QAChatbotUnit 
+                    key={stream}
+                    author={MODEL_NAME as ConversationRole}
+                    text={stream}
+                  />
+                )} */}
+        
+
       </section>
       <section className='flex flex-col gap-4 items-end'>
         <textarea 

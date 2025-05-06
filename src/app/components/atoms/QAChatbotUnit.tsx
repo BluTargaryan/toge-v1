@@ -1,6 +1,8 @@
 import React from 'react'
 
 const QAChatbotUnit = ({author, text}: {author: string,  text: string}) => {
+  console.log(author)
+  console.log(text)
   return (
     <>
     {author === "assistant" &&
