@@ -3,9 +3,7 @@
 import React, { useCallback, useEffect, useState, ChangeEvent } from 'react'
 import QAChatbotUnit from '../components/atoms/QAChatbotUnit'
 import { BedrockRuntimeClient, ConverseCommand, ConversationRole, Message, ContentBlock, ImageFormat, ConverseCommandOutput } from "@aws-sdk/client-bedrock-runtime";
-import { toolsSchema } from '../tools';
-import { convertFileToUint8Array } from '../utils/utils';
-import { useAppContext } from '../context/AppContext';
+import { useRouter } from 'next/navigation';
 
 import {
   BedrockAgentRuntimeClient,
@@ -47,6 +45,7 @@ const Chatbot = () => {
   const [history, setHistory] = useState<IMessage[]>([]);
 
   const [stream, setStream] = useState<string | null>(null);
+  const router = useRouter();
 
   const sendResponse = async (prompt: string) => {
     const content: string = prompt;
@@ -81,6 +80,9 @@ const Chatbot = () => {
           retries--;
           await new Promise(resolve => setTimeout(resolve, delay));
           delay *= 2;
+          if (retries === 0) {
+            router.push('/');
+          }
         } else {
           throw error;
         }
